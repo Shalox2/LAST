@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>New Product Inquiry - {{ site_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .content {
+            padding: 20px;
+        }
+        .product-info {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #6c757d;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>New Product Inquiry</h2>
+    </div>
+    
+    <div class="content">
+        <p>Hello {{ seller.username }},</p>
+        
+        <p>You have received a new inquiry about your product <strong>{{ product.name }}</strong> from {{ buyer.username }}.</p>
+        
+        <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p>Price: ${{ product.price }}</p>
+            <p>Inquiry Date: {{ inquiry.created_at|date:"F j, Y H:i" }}</p>
+        </div>
+        
+        <h4>Buyer's Message:</h4>
+        <blockquote style="background-color: #f8f9fa; padding: 10px; border-left: 4px solid #28a745; margin: 15px 0;">
+            {{ inquiry.message|linebreaksbr }}
+        </blockquote>
+        
+        <h4>Contact Information:</h4>
+        <p>Phone: {{ inquiry.phone }}</p>
+        <p>Email: {{ buyer.email }}</p>
+        
+        <p>Please respond to this inquiry as soon as possible to provide the best customer service.</p>
+        
+        <p>
+            <a href="{{ site_url }}/dashboard/inquiries/{{ inquiry.id }}" class="button">View Inquiry in Dashboard</a>
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>This is an automated message from {{ site_name }}. Please do not reply to this email.</p>
+        <p>© {% now "Y" %} {{ site_name }}. All rights reserved.</p>
+    </div>
+</body>
+</html>
