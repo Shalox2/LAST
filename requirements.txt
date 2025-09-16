@@ -1,9 +1,6 @@
-Django==4.2.7
-djangorestframework==3.14.0
-djangorestframework-simplejwt==5.3.0
-django-cors-headers==4.3.1
+
 python-decouple==3.8
-Pillow==10.3.0
+
 channels==4.0.0
 channels-redis==4.1.0
 asgiref==3.7.2
@@ -11,5 +8,30 @@ redis==4.5.5
 psycopg2-binary==2.9.7
 dj-database-url==2.2.0
 whitenoise==6.6.0
-gunicorn==21.2.0
 daphne==4.0.0
+
+# Upgrade packaging tools first
+pip>=24.0
+setuptools>=70.0
+wheel>=0.43.0
+
+# Django core
+Django==5.0.6
+
+# Django REST Framework
+djangorestframework==3.15.2
+
+# JWT Authentication
+djangorestframework-simplejwt==5.3.0
+
+# CORS headers for frontend-backend connection
+django-cors-headers==4.3.1
+
+# Environment variable management
+python-decouple==3.8
+
+# Image handling
+Pillow==10.2.0
+
+# WSGI server for production
+gunicorn==21.2.0
