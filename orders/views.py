@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
 from .models import Order, SellerNotification
 from .serializers import OrderSerializer, OrderCreateSerializer, SellerNotificationSerializer
+from django.views.generic import TemplateView
+
 
 class OrderListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -113,3 +115,22 @@ def fulfill_order(request, order_id):
     SellerNotification.objects.filter(order=order, seller=order.product.shop.owner, is_read=False).update(is_read=True)
 
     return Response({'status': 'success', 'order': OrderSerializer(order).data})
+
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"
+from django.views.generic import View
+from django.http import HttpResponse
+import os
+
+class FrontendAppView(View):
+    def get(self, request):
+        try:
+            with open(os.path.join("frontend/build", "index.html")) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            return HttpResponse(
+                "Build ya React haijapatikana. Tafadhali endesha `npm run build`.",
+                status=501,
+            )

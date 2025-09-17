@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from django.db.models import Q
 from .models import Product
 from .serializers import ProductSerializer, ProductCreateSerializer
+from django.views.generic import TemplateView
+
 
 class ProductListCreateView(generics.ListCreateAPIView):
     
@@ -35,3 +37,22 @@ class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.filter(is_active=True)
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+
+from django.views.generic import View
+from django.http import HttpResponse
+import os
+
+class FrontendAppView(View):
+    def get(self, request):
+        try:
+            with open(os.path.join("frontend/build", "index.html")) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            return HttpResponse(
+                "Build ya React haijapatikana. Tafadhali endesha `npm run build`.",
+                status=501,
+            )
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"

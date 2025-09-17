@@ -6,13 +6,19 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
+from shops.views import FrontendAppView
+
 from .models import Shop, VerificationLog, ShopComment, CommentHelpful, ProductInquiry
 from .serializers import (
     ShopSerializer, ShopCreateSerializer, ShopDocumentUploadSerializer,
     ShopVerificationSerializer, VerificationLogSerializer,
     ShopCommentSerializer, CommentHelpfulSerializer, ProductInquirySerializer
 )
+from django.views.generic import TemplateView
 
+from django.views.generic import View
+from django.http import HttpResponse
+import os
 class ShopListCreateView(generics.ListCreateAPIView):
     queryset = Shop.objects.all()
     
@@ -366,3 +372,20 @@ class ProductInquiryView(generics.CreateAPIView):
         #     'message': f'New inquiry about {product.name} from {buyer.username}',
         #     'inquiry_id': inquiry.id
         # })
+
+
+class FrontendAppView(View):
+    def get(self, request):
+        try:
+            with open(os.path.join("frontend/build", "index.html")) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            return HttpResponse(
+                "Build ya React haijapatikana. Tafadhali endesha `npm run build`.",
+                status=501,
+            )
+
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"

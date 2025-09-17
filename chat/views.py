@@ -7,6 +7,8 @@ from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer, CreateMessageSerializer
 from orders.models import Order
 
+
+from django.views.generic import TemplateView
 class ConversationListView(generics.ListAPIView):
     serializer_class = ConversationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -84,3 +86,22 @@ class MessageListView(generics.ListCreateAPIView):
         ).exclude(sender=request.user).update(is_read=True)
         
         return response
+
+from django.views.generic import View
+from django.http import HttpResponse
+import os
+
+class FrontendAppView(View):
+    def get(self, request):
+        try:
+            with open(os.path.join("frontend/build", "index.html")) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            return HttpResponse(
+                "Build ya React haijapatikana. Tafadhali endesha `npm run build`.",
+                status=501,
+            )
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"

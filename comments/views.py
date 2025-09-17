@@ -4,7 +4,11 @@ from rest_framework.response import Response
 from django.db.models import Q
 from .models import Comment
 from .serializers import CommentSerializer
+from django.views.generic import TemplateView
+from comments.views import FrontendAppView
 
+
+from comments import serializers
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -92,3 +96,21 @@ class CommentViewSet(viewsets.ModelViewSet):
         comments = self.get_queryset().filter(product_id=product_id, parent__isnull=True)
         serializer = self.get_serializer(comments, many=True)
         return Response(serializer.data)
+
+
+class FrontendAppView(TemplateView):
+    template_name = "index.html"
+from django.views.generic import View
+from django.http import HttpResponse
+import os
+
+class FrontendAppView(View):
+    def get(self, request):
+        try:
+            with open(os.path.join("frontend/build", "index.html")) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            return HttpResponse(
+                "Build ya React haijapatikana. Tafadhali endesha `npm run build`.",
+                status=501,
+            )
