@@ -88,10 +88,10 @@ def join_payment(request):
             'shop_status': shop.verification_status,
             'payment_status': shop.joined_fee_paid
         })
-    except Shop.DoesNotExist:
         return Response({'error': 'Shop not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST', 'PATCH'])
+
 @permission_classes([IsAdminUser])
 def verify_shop(request, shop_id):
     """Secure admin endpoint to verify shop with multi-step process"""
