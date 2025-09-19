@@ -373,7 +373,7 @@ class ProductInquiryView(generics.CreateAPIView):
         #     'inquiry_id': inquiry.id
         # })
 
-from django.views.generic import TemplateView
+from shops.views import FrontendAppView
 
 class FrontendAppView(TemplateView):
     template_name = "index.html"
