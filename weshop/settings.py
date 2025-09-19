@@ -16,8 +16,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 # CSRF Configuration
 CSRF_TRUSTED_ORIGINS = [
-    'https://weshop-3.onrender.com',
-    'https://wewshop.netlify.app',
+    
     'http://localhost:3000',
     'http://127.0.0.1:8000',
 ]
@@ -140,7 +139,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [BASE_DIR / "frontend/build/static"]
 TEMPLATES[0]["DIRS"] = [os.path.join(BASE_DIR, "frontend")]
@@ -195,6 +194,7 @@ CORS_ALLOWED_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
