@@ -2,13 +2,18 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
-import dj_database_url  # pyright: ignore[reportMissingImports]
+import dj_database_url  
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
+# Example of setting SECRET_KEY using environment variable or .env file:
+# In your .env file, add:
+# SECRET_KEY=your-very-secret-key-here
+# Or set it in your environment before running Django:
+# export SECRET_KEY='your-very-secret-key-here'
+SECRET_KEY = config('+5fw1z1uw9qbwpuifj9x_d3c*0-4@jd3wr2h2=_^+)denr6ia2', default='django-insecure-your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)

@@ -1,14 +1,12 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, serializers as drf_serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from .models import Comment
 from .serializers import CommentSerializer
-from django.views.generic import TemplateView
-from comments.views import FrontendAppView
-
-
-from comments import serializers
+from django.views.generic import TemplateView, View
+from django.http import HttpResponse
+import os
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -31,7 +29,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         if parent_id:
             parent = Comment.objects.get(id=parent_id)
             if parent.is_reply:
-                raise serializers.ValidationError("Cannot reply to a reply")
+                raise drf_serializers.ValidationError("Cannot reply to a reply")
             serializer.save(
                 user=self.request.user,
                 is_reply=True,
@@ -45,7 +43,6 @@ class CommentViewSet(viewsets.ModelViewSet):
             if product_id:
                 # Optional role check
                 if getattr(self.request.user, 'role', None) and self.request.user.role != 'buyer':
-                    from rest_framework import serializers as drf_serializers
                     raise drf_serializers.ValidationError("Only buyers can comment on products")
                 try:
                     from orders.models import Order
@@ -56,7 +53,6 @@ class CommentViewSet(viewsets.ModelViewSet):
                 except Exception:
                     has_order = False
                 if not has_order:
-                    from rest_framework import serializers as drf_serializers
                     raise drf_serializers.ValidationError("You can only comment on products you have ordered")
             serializer.save(user=self.request.user)
     
@@ -97,20 +93,3 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(comments, many=True)
         return Response(serializer.data)
 
-
-class FrontendAppView(TemplateView):
-    template_name = "index.html"
-from django.views.generic import View
-from django.http import HttpResponse
-import os
-
-class FrontendAppView(View):
-    def get(self, request):
-        try:
-            with open(os.path.join("frontend/build", "index.html")) as f:
-                return HttpResponse(f.read())
-        except FileNotFoundError:
-            return HttpResponse(
-                "Build ya React haijapatikana. Tafadhali endesha `npm run build`.",
-                status=501,
-            )

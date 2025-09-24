@@ -52,16 +52,13 @@ def join_payment(request):
     
     try:
         shop = request.user.shop
-        
         # Check if already paid
         if shop.joined_fee_paid:
             return Response({'error': 'Join fee already paid'}, status=status.HTTP_400_BAD_REQUEST)
-        
         # Process payment (in real implementation, integrate with payment gateway)
         shop.joined_fee_paid = True
         shop.verification_status = 'documents_submitted'  # Move to next step
         shop.save()
-        
         # Create verification log
         VerificationLog.objects.create(
             shop=shop,
@@ -70,7 +67,6 @@ def join_payment(request):
             notes='Join fee payment completed',
             ip_address=request.META.get('REMOTE_ADDR')
         )
-        
         # Create notification for admin
         from orders.models import SellerNotification
         from django.contrib.auth import get_user_model
@@ -82,13 +78,13 @@ def join_payment(request):
                 title=f'Shop Payment Completed - {shop.name}',
                 message=f'Shop "{shop.name}" has completed payment and is ready for verification.'
             )
-        
         return Response({
             'message': 'Join fee payment successful! Your shop is now ready for admin verification.',
             'shop_status': shop.verification_status,
             'payment_status': shop.joined_fee_paid
         })
-        return Response({'error': 'Shop not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST', 'PATCH'])
 
@@ -372,8 +368,3 @@ class ProductInquiryView(generics.CreateAPIView):
         #     'message': f'New inquiry about {product.name} from {buyer.username}',
         #     'inquiry_id': inquiry.id
         # })
-
-from shops.views import FrontendAppView
-
-class FrontendAppView(TemplateView):
-    template_name = "index.html"
